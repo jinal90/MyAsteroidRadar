@@ -8,18 +8,27 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
+//    private val viewModel: MainViewModel by lazy {
+//        ViewModelProvider(this).get(MainViewModel::class.java)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val application = requireNotNull(this.activity).application
+        val dataSource = AsteroidDatabase.getInstance(application).asteroidDatabaseDao()
+        val viewModelFactory = MainViewModelFactory(dataSource, application)
+        val viewModel =
+            ViewModelProvider(
+                this, viewModelFactory
+            )[MainViewModel::class.java]
 
         val asteroidListAdapter = AsteroidViewAdapter()
 

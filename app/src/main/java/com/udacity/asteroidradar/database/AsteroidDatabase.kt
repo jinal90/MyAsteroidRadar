@@ -14,23 +14,26 @@ import com.udacity.asteroidradar.model.Asteroid
 @Database(entities = [Asteroid::class], version = 1, exportSchema = false)
 abstract class AsteroidDatabase : RoomDatabase() {
 
-    abstract val asteroidDatabaseDao: AsteroidDatabaseDao
+    abstract fun asteroidDatabaseDao(): AsteroidDatabaseDao
 
     companion object {
         @Volatile
         private var INSTANCE: AsteroidDatabase? = null
         fun getInstance(context: Context): AsteroidDatabase {
-            synchronized(this) {
-                var instance = INSTANCE
-                if (instance == null) {
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        AsteroidDatabase::class.java,
-                        "asteroidd_database"
-                    ).fallbackToDestructiveMigration().build()
-                    INSTANCE = instance
-                }
+            val instance = INSTANCE
+            if (instance != null) {
                 return instance
+            }
+            synchronized(this) {
+                val tempInstance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AsteroidDatabase::class.java,
+                    "asteroid_database"
+                ).build()
+
+                INSTANCE = tempInstance
+
+                return tempInstance
             }
         }
     }

@@ -1,21 +1,35 @@
 package com.udacity.asteroidradar.view
 
+import android.app.Application
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.ImageOfTheDayApi
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.AsteroidDatabaseDao
 import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.model.ImageOfTheDayNasa
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    val database: AsteroidDatabaseDao,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _asteroidList = MutableLiveData<ArrayList<Asteroid>>()
     val asteroidList: LiveData<ArrayList<Asteroid>>
@@ -24,6 +38,32 @@ class MainViewModel : ViewModel() {
     private val _imageOfTheDayUrl = MutableLiveData<String>()
     val imageOfTheDayUrl: LiveData<String>
         get() = _imageOfTheDayUrl
+
+    init {
+        initializeAsteroids()
+    }
+
+    private fun initializeAsteroids() = viewModelScope.launch(Dispatchers.IO) {
+        val asteroids = database.get(getCurrentDate())
+        _asteroidList.postValue(ArrayList(asteroids))
+    }
+
+    private fun getCurrentDate(): String {
+        val calendar = Calendar.getInstance()
+        val currentTime = calendar.time
+        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+        return dateFormat.format(currentTime)
+    }
+
+    private fun saveAsteroids() = viewModelScope.launch(Dispatchers.IO) {
+        _asteroidList.value.let {
+            if (it != null) {
+                for (asteroid in it) {
+                    database.insertAsteroid(asteroid)
+                }
+            }
+        }
+    }
 
     fun getAsteroids() {
         val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
@@ -43,6 +83,7 @@ class MainViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         Log.d("MainViewModel", "Success")
                         _asteroidList.value = parseAsteroidsJsonResult(JSONObject(response.body()))
+                        saveAsteroids()
                         Log.d("MainViewModel", "Success ${_asteroidList.value}")
                     } else {
                         Log.d("MainViewModel", "Fail")
