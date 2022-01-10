@@ -1,9 +1,12 @@
-# Purpose of this Folder
+# The Asteroid Radar
 
-This folder should contain the scaffolded project files to get a student started on their project. This repo will be added to the Classroom for students to use, so please do not have any solutions in this folder.
+This project will consist of two screens.
 
-## Note: Android Kotlin Gradle Update
-Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.properties` file:
-```
-distributionUrl = https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
-```
+1. Main screen: Displays list of near earth Asteroid for next seven days. 
+2. Main screen: Displays details about selected Asteroid.
+
+## Getting Started
+
+Add Nasa API key in MainRepository.kt class in methods 
+refreshAsteroids() -> Line number 30
+getTheImageOfTheDay() -> Line number 53
