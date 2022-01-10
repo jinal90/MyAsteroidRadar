@@ -7,4 +7,19 @@
     <color name="default_text_color">#FFFFFF</color>
     <color name="text_grey">#D2D2D2</color>
     <color name="potentially_hazardous">#FF8282</color>
+
+<!--    <color name="cardBackgroundTransparent">#70FFFFFF</color>-->
+    <color name="primaryColor">#f5f5f5</color>
+    <color name="primaryLightColor">#ffffff</color>
+    <color name="primaryDarkColor">#33691e</color>
+    <color name="secondaryColor">#9ccc65</color>
+    <color name="secondaryLightColor">#cfff95</color>
+    <color name="secondaryDarkColor">#6b9b37</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
+    <color name="accentColor">#d4e157</color>
+    <color name="primaryDarkColorTransparent">#9033691e</color>
+    <color name="backgroundTransparent">#99000000</color>
+    <color name="cardBackgroundTransparent">#60000000</color>
+
 </resources>
