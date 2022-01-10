@@ -3,7 +3,7 @@
 This project will consist of two screens.
 
 1. Main screen: Displays list of near earth Asteroid for next seven days. 
-2. Main screen: Displays details about selected Asteroid.
+2. Detail screen: Displays details about selected Asteroid.
 
 ## Getting Started
 
