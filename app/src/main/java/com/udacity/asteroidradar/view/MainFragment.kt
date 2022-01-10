@@ -59,8 +59,6 @@ class MainFragment : Fragment() {
         })
 
         setHasOptionsMenu(true)
-        viewModel.getAsteroids()
-        viewModel.getTheImageOfTheDay()
 
         return binding.root
     }

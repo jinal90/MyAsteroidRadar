@@ -1,7 +1,9 @@
 package com.udacity.asteroidradar.api
 
-import com.udacity.asteroidradar.model.Asteroid
+import android.content.Context
+import android.net.ConnectivityManager
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.model.Asteroid
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,7 +16,7 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
 
     val nextSevenDaysFormattedDates = getNextSevenDaysFormattedDates()
     for (formattedDate in nextSevenDaysFormattedDates) {
-        if(nearEarthObjectsJson.has(formattedDate)){
+        if (nearEarthObjectsJson.has(formattedDate)) {
             val dateAsteroidJsonArray = nearEarthObjectsJson.getJSONArray(formattedDate)
 
             for (i in 0 until dateAsteroidJsonArray.length()) {
@@ -58,4 +60,17 @@ fun getNextSevenDaysFormattedDates(): ArrayList<String> {
     }
 
     return formattedDateList
+}
+
+fun checkConnection(context: Context): Boolean {
+    val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetworkInfo = connMgr.activeNetworkInfo
+    if (activeNetworkInfo != null) { // connected to the internet
+        // connected to the mobile provider's data plan
+        return if (activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI) {
+            // connected to wifi
+            true
+        } else activeNetworkInfo.type == ConnectivityManager.TYPE_MOBILE
+    }
+    return false
 }

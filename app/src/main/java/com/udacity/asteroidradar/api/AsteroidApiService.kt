@@ -1,8 +1,9 @@
 package com.udacity.asteroidradar.api
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.udacity.asteroidradar.Constants
+import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
@@ -20,18 +21,18 @@ private val client: OkHttpClient? = OkHttpClient.Builder()
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
+    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(Constants.BASE_URL)
     .client(client)
     .build()
 
 interface AsteroidApiService {
     @GET("neo/rest/v1/feed")
-    fun getAsteroids(
+    fun getAsteroidsAsync(
         @Query("start_date") start_date: String,
         @Query("end_date") end_date: String,
         @Query("api_key") api_key: String
-    ):
-            Call<String>
+    ): Deferred<String>
 }
 
 object AsteroidApi {
